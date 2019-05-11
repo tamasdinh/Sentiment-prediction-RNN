@@ -182,7 +182,7 @@ criterion = nn.BCELoss()
 optimizer = torch.optim.Adam(net.parameters(), lr=lr)
 
 #%%
-epochs = 1
+epochs = 5
 counter = 0
 print_every = 100
 clip = 5
@@ -235,7 +235,7 @@ for e in range(epochs):
 #%%
 model_name = 'sentiment-prediction-rnn_{}_{}.net'.format(datetime.today().date(), int(datetime.today().timestamp()))
 
-checkpoint = {'n_hidden': net.n_hidden,
+checkpoint = {'n_hidden': net.hidden_dim,
               'n_layers': net.n_layers,
               'state_dict': net.state_dict()}
 
