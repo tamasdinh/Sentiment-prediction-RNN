@@ -15,11 +15,6 @@ with open(os.getcwd() + '/data/labels.txt', 'r') as f:
     labels = f.read()
 
 #%%
-print(reviews[:2000])
-print('--')
-print(labels[:20])
-
-#%%
 # Text preprocessing
 reviews = reviews.lower()
 reviews = ''.join([ch for ch in reviews if ch not in punctuation])
@@ -87,9 +82,6 @@ train_y = labels_enc[train_idx]
 valid_y = labels_enc[valid_idx]
 test_y = labels_enc[test_idx]
 
-for dataset in [train_x, valid_x, test_x, train_y, valid_y, test_y]:
-    print(dataset.shape)
-
 #%%
 train_data = TensorDataset(torch.from_numpy(train_x), torch.from_numpy(train_y))
 valid_data = TensorDataset(torch.from_numpy(valid_x), torch.from_numpy(valid_y))
@@ -105,11 +97,11 @@ test_loader = DataLoader(test_data, shuffle=True, batch_size=batch_size)
 dataiter = iter(train_loader)
 sample_x, sample_y = dataiter.next()
 
-print('Sample input size: {}'.format(sample_x.size()))
-print('Sample input: \n', sample_x)
-print()
-print('Sample output size: {}'.format(sample_y.size()))
-print('Sample output: \n', sample_y)
+#print('Sample input size: {}'.format(sample_x.size()))
+#print('Sample input: \n', sample_x)
+#print()
+#print('Sample output size: {}'.format(sample_y.size()))
+#print('Sample output: \n', sample_y)
 
 #%%
 train_on_gpu = torch.cuda.is_available()
@@ -243,18 +235,26 @@ with open('./{}'.format(model_name), 'wb') as f:
     torch.save(checkpoint, f)
 
 #%%
+with open(f'./{model_name}', 'rb') as f:
+    checkpoint = torch.load(f, map_location='cpu')
+
+net_trained = SentimentRNN(vocab_size, output_size, embedding_dim, hidden_dim=checkpoint['n_hidden'],
+                           n_layers=checkpoint['n_layers'])
+net_trained.load_state_dict(checkpoint['state_dict'])
+
+#%%
 test_losses = []
 num_correct = 0
 
-h = net.init_hidden(batch_size)
+h = net_trained.init_hidden(batch_size)
 
-net.eval()
+net_trained.eval()
 
 for inputs, labels in test_loader:
     h = tuple([each.data for each in h])
     if train_on_gpu:
         inputs, labels = inputs.cuda(), labels.cuda()
-    output, h = net(inputs, h)
+    output, h = net_trained(inputs, h)
 
     test_loss = criterion(output.squeeze(), labels.float())
     test_losses.append(test_loss.item())
@@ -270,5 +270,4 @@ print('Test loss: {:.4f}'.format(np.mean(test_losses)))
 test_accuracy = num_correct / len(test_loader.dataset)
 print('Test accuracy: {:.4f}'.format(test_accuracy))
 
-#%%
 
