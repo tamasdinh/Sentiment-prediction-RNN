@@ -207,7 +207,6 @@ for e in range(epochs):
 
         net.zero_grad()
 
-        print('Starting')
         output, h = net(inputs, h)
 
         loss = criterion(output.squeeze(), labels.float())
@@ -227,11 +226,11 @@ for e in range(epochs):
                 val_loss = criterion(output.squeeze(), labels.float())
                 val_losses.append(val_loss.item())
 
-        net.train()
-        print('Epoch: {}/{}...'.format(e + 1, epochs),
-              'Step: {}...'.format(counter),
-              'Training loss: {:.4f}...'.format(loss.item()),
-              'Validation loss: {:.4f}'.format(np.mean(val_losses)))
+            net.train()
+            print('Epoch: {}/{}...'.format(e + 1, epochs),
+                  'Step: {}...'.format(counter),
+                  'Training loss: {:.4f}...'.format(loss.item()),
+                  'Validation loss: {:.4f}'.format(np.mean(val_losses)))
 
 #%%
 model_name = 'sentiment-prediction-rnn_{}_{}.net'.format(datetime.today().date(), int(datetime.today().timestamp()))
