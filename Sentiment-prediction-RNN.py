@@ -239,7 +239,36 @@ checkpoint = {'n_hidden': net.hidden_dim,
               'n_layers': net.n_layers,
               'state_dict': net.state_dict()}
 
-with open(f'./{model_name}', 'wb') as f:
+with open('./{}'.format(model_name), 'wb') as f:
     torch.save(checkpoint, f)
 
 #%%
+test_losses = []
+num_correct = 0
+
+h = net.init_hidden(batch_size)
+
+net.eval()
+
+for inputs, labels in test_loader:
+    h = tuple([each.data for each in h])
+    if train_on_gpu:
+        inputs, labels = inputs.cuda(), labels.cuda()
+    output, h = net(inputs, h)
+
+    test_loss = criterion(output.squeeze(), labels.float())
+    test_losses.append(test_loss.item())
+
+    pred = torch.round(output.squeeze())
+
+    is_correct = pred.eq(labels.float().view_as(pred))
+    corrects = np.squeeze(is_correct.numpy()) if not train_on_gpu else np.squeeze(is_correct.cpu().numpy())
+    num_correct += np.sum(corrects)
+
+print('Test loss: {:.4f}'.format(np.mean(test_losses)))
+
+test_accuracy = num_correct / len(test_loader.dataset)
+print('Test accuracy: {:.4f}'.format(test_accuracy))
+
+#%%
+
