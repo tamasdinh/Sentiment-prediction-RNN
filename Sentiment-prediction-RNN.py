@@ -235,8 +235,10 @@ with open('./{}'.format(model_name), 'wb') as f:
     torch.save(checkpoint, f)
 
 #%%
+loc_map = 'cuda' if train_on_gpu else 'cpu'
+
 with open('./{}'.format(model_name), 'rb') as f:
-    checkpoint = torch.load(f, map_location='gpu')
+    checkpoint = torch.load(f, map_location=loc_map)
 
 net_trained = SentimentRNN(vocab_size, output_size, embedding_dim, hidden_dim=checkpoint['n_hidden'],
                            n_layers=checkpoint['n_layers'])
