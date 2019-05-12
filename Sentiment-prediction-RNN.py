@@ -15,7 +15,7 @@ with open(os.getcwd() + '/data/labels.txt', 'r') as f:
     labels = f.read()
 
 #%%
-# Text preprocessing
+# Text pre-processing
 reviews = reviews.lower()
 reviews = ''.join([ch for ch in reviews if ch not in punctuation])
 reviews = reviews.split('\n')[:-1]
@@ -94,14 +94,16 @@ valid_loader = DataLoader(valid_data, shuffle=True, batch_size=batch_size)
 test_loader = DataLoader(test_data, shuffle=True, batch_size=batch_size)
 
 #%%
+'''
 dataiter = iter(train_loader)
 sample_x, sample_y = dataiter.next()
 
-#print('Sample input size: {}'.format(sample_x.size()))
-#print('Sample input: \n', sample_x)
-#print()
-#print('Sample output size: {}'.format(sample_y.size()))
-#print('Sample output: \n', sample_y)
+print('Sample input size: {}'.format(sample_x.size()))
+print('Sample input: \n', sample_x)
+print()
+print('Sample output size: {}'.format(sample_y.size()))
+print('Sample output: \n', sample_y)
+'''
 
 #%%
 train_on_gpu = torch.cuda.is_available()
