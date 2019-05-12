@@ -159,9 +159,9 @@ class SentimentRNN(nn.Module):
 #%%
 # Instantiating the network
 vocab_size = len(word2int)
-output_size = 2
-embedding_dim = 300
-hidden_dim = 512
+output_size = 1
+embedding_dim = 400
+hidden_dim = 256
 n_layers = 2
 
 net = SentimentRNN(vocab_size, output_size, embedding_dim, hidden_dim, n_layers)
