@@ -174,7 +174,7 @@ criterion = nn.BCELoss()
 optimizer = torch.optim.Adam(net.parameters(), lr=lr)
 
 #%%
-epochs = 5
+epochs = 4
 counter = 0
 print_every = 100
 clip = 5
@@ -236,7 +236,7 @@ with open('./{}'.format(model_name), 'wb') as f:
 
 #%%
 with open('./{}'.format(model_name), 'rb') as f:
-    checkpoint = torch.load(f, map_location='cpu')
+    checkpoint = torch.load(f, map_location='gpu')
 
 net_trained = SentimentRNN(vocab_size, output_size, embedding_dim, hidden_dim=checkpoint['n_hidden'],
                            n_layers=checkpoint['n_layers'])
