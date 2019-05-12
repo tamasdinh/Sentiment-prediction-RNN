@@ -244,6 +244,9 @@ net_trained = SentimentRNN(vocab_size, output_size, embedding_dim, hidden_dim=ch
                            n_layers=checkpoint['n_layers'])
 net_trained.load_state_dict(checkpoint['state_dict'])
 
+if train_on_gpu:
+    net_trained.cuda()
+
 #%%
 test_losses = []
 num_correct = 0
